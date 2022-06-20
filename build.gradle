@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '0.11-SNAPSHOT'
+	id 'fabric-loom' version '0.12-SNAPSHOT'
 	id 'maven-publish'
 	id 'com.matthewprenger.cursegradle' version '1.4.0'
 	id 'com.modrinth.minotaur' version '2.1.1'
@@ -45,9 +45,9 @@ dependencies {
 	modCompileOnly("me.shedaniel:RoughlyEnoughItems-fabric:6.0.247-alpha") {
 		exclude group: "net.fabricmc.fabric-api"
 	}
-	modImplementation("de.siphalor:modsoftheworld-$minecraft_major_version:1.0.9+mc1.18-pre1") {
-		transitive false
-	}
+//	modImplementation("de.siphalor:modsoftheworld-$minecraft_major_version:1.0.9+mc1.18-pre1") {
+//		transitive false
+//	}
 
 	modRuntimeOnly("com.github.astei:lazydfu:master-SNAPSHOT")
 
