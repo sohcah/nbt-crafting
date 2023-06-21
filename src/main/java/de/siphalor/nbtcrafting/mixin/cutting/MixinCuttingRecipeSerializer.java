@@ -53,7 +53,7 @@ public class MixinCuttingRecipeSerializer {
 			method = "read(Lnet/minecraft/util/Identifier;Lcom/google/gson/JsonObject;)Lnet/minecraft/recipe/CuttingRecipe;",
 			at = @At(
 					value = "NEW",
-					target = "net/minecraft/item/ItemStack"
+					target = "(Lnet/minecraft/item/ItemConvertible;I)Lnet/minecraft/item/ItemStack;"
 			)
 	)
 	public ItemStack createStack(ItemConvertible itemConvertible, int count) {

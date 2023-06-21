@@ -22,12 +22,14 @@ import com.google.gson.JsonParseException;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.inventory.RecipeInputInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.ShapedRecipe;
+import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
@@ -50,11 +52,11 @@ import de.siphalor.nbtcrafting.util.duck.IItemStack;
 public abstract class MixinShapedRecipe {
 	@Shadow
 	@Final
-	private ItemStack output;
+	ItemStack output;
 
 	@Shadow
 	@Final
-	private DefaultedList<Ingredient> input;
+	DefaultedList<Ingredient> input;
 
 	@Inject(method = "outputFromJson", at = @At("HEAD"))
 	private static void handlePotions(JsonObject json, CallbackInfoReturnable<ItemStack> ci) {
@@ -106,9 +108,9 @@ public abstract class MixinShapedRecipe {
 		ci.setReturnValue(stack);
 	}
 
-	@Inject(method = "craft", at = @At("HEAD"), cancellable = true)
-	public void craft(CraftingInventory craftingInventory, CallbackInfoReturnable<ItemStack> callbackInfoReturnable) {
-		ItemStack result = RecipeUtil.getDollarAppliedResult(output, input, craftingInventory);
+	@Inject(method = "craft(Lnet/minecraft/inventory/RecipeInputInventory;Lnet/minecraft/registry/DynamicRegistryManager;)Lnet/minecraft/item/ItemStack;", at = @At("HEAD"), cancellable = true)
+	public void craft(RecipeInputInventory recipeInputInventory, DynamicRegistryManager dynamicRegistryManager, CallbackInfoReturnable<ItemStack> callbackInfoReturnable) {
+		ItemStack result = RecipeUtil.getDollarAppliedResult(output, input, recipeInputInventory);
 		if (result != null) callbackInfoReturnable.setReturnValue(result);
 	}
 }

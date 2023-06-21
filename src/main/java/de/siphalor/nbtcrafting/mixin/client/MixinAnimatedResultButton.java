@@ -48,19 +48,19 @@ public abstract class MixinAnimatedResultButton extends ClickableWidget {
 
 	@Inject(
 			method = "renderButton",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/item/ItemRenderer;renderInGui(Lnet/minecraft/item/ItemStack;II)V"),
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawItem(Lnet/minecraft/item/ItemStack;IIII)V"),
 			locals = LocalCapture.CAPTURE_FAILSOFT
 	)
-	private void beforeItemDrawn(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci, MinecraftClient minecraftClient, int int_3, int int_4, boolean boolean_1, MatrixStack matrices_2, @SuppressWarnings("rawtypes") List list_1, ItemStack stack, int offset) {
+	private void beforeItemDrawn(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci, MinecraftClient minecraftClient, int i, int j, boolean bl, List list, ItemStack itemStack, int offset) {
 		itemDrawOffset = offset;
 	}
 
 	@Inject(
 			method = "renderButton",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/item/ItemRenderer;renderInGui(Lnet/minecraft/item/ItemStack;II)V", shift = Shift.AFTER),
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawItem(Lnet/minecraft/item/ItemStack;IIII)V", shift = Shift.AFTER),
 			locals = LocalCapture.CAPTURE_FAILSOFT
 	)
-	private void drawButton(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci, MinecraftClient minecraftClient, int int_3, int int_4, boolean boolean_1, MatrixStack matrices_2, @SuppressWarnings("rawtypes") List list_1, ItemStack stack) {
+	private void drawButton(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci, MinecraftClient minecraftClient, int i, int j, boolean bl, List list, ItemStack stack, int k) {
 		context.drawItemInSlot(minecraftClient.textRenderer, stack, this.getX() + itemDrawOffset, this.getY() + itemDrawOffset);
 	}
 }

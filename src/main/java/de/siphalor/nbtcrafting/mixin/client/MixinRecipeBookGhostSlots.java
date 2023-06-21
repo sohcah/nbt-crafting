@@ -46,7 +46,7 @@ public abstract class MixinRecipeBookGhostSlots {
 
 	@Inject(
 			method = "draw",
-			at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;depthFunc(I)V", remap = false, shift = Shift.BEFORE),
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/RenderLayer;getGuiGhostRecipeOverlay()Lnet/minecraft/client/render/RenderLayer;", remap = false, shift = Shift.BEFORE),
 			locals = LocalCapture.CAPTURE_FAILSOFT
 	)
 	public void draw(DrawContext context, MinecraftClient minecraftClient, int xOffset, int yOffset, boolean bool, float float_1, CallbackInfo ci, int i) {

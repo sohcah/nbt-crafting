@@ -43,7 +43,6 @@ public interface MixinRecipe {
 	 * @reason Returns the recipe remainders. Sadly has to overwrite since this is an interface.
 	 * @author Siphalor
 	 */
-	@Overwrite
 	default DefaultedList<ItemStack> getRemainder(Inventory inventory) {
 		final DefaultedList<ItemStack> stackList = DefaultedList.ofSize(inventory.size(), ItemStack.EMPTY);
 		Map<String, Object> reference;

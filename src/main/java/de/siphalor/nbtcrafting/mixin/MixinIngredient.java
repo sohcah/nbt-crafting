@@ -72,23 +72,23 @@ public abstract class MixinIngredient implements IIngredient, ICloneable {
 	private void onConstruct(@SuppressWarnings("rawtypes") Stream stream, CallbackInfo ci) {
 		advancedEntries = null;
 	}
-
-	@Inject(method = "cacheMatchingStacks", at = @At("HEAD"), cancellable = true)
-	private void createStackArray(CallbackInfo callbackInfo) {
-		if (advancedEntries != null) {
-			callbackInfo.cancel();
-			if (matchingStacks == null || matchingStacks.length == 0) {
-				if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-					matchingStacks = Arrays.stream(advancedEntries).flatMap(entry -> entry.getPreviewStacks(true).stream()).distinct().toArray(ItemStack[]::new);
-				} else {
-					matchingStacks = Arrays.stream(advancedEntries).flatMap(entry -> entry.getPreviewStacks(false).stream()).distinct().toArray(ItemStack[]::new);
-				}
-				if (matchingStacks.length == 0) {
-					matchingStacks = new ItemStack[]{ItemStack.EMPTY};
-				}
-			}
-		}
-	}
+//  TODO: Is this needed?
+//	@Inject(method = "cacheMatchingStacks", at = @At("HEAD"), cancellable = true)
+//	private void createStackArray(CallbackInfo callbackInfo) {
+//		if (advancedEntries != null) {
+//			callbackInfo.cancel();
+//			if (matchingStacks == null || matchingStacks.length == 0) {
+//				if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+//					matchingStacks = Arrays.stream(advancedEntries).flatMap(entry -> entry.getPreviewStacks(true).stream()).distinct().toArray(ItemStack[]::new);
+//				} else {
+//					matchingStacks = Arrays.stream(advancedEntries).flatMap(entry -> entry.getPreviewStacks(false).stream()).distinct().toArray(ItemStack[]::new);
+//				}
+//				if (matchingStacks.length == 0) {
+//					matchingStacks = new ItemStack[]{ItemStack.EMPTY};
+//				}
+//			}
+//		}
+//	}
 
 	@Inject(method = "test", at = @At("HEAD"), cancellable = true)
 	public void matches(ItemStack stack, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
