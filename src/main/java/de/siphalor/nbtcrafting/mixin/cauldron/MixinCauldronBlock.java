@@ -24,6 +24,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.collection.DefaultedList;
@@ -49,7 +50,7 @@ public class MixinCauldronBlock {
 			if (cauldronRecipe.isPresent()) {
 				DefaultedList<ItemStack> remainingStacks = cauldronRecipe.get().getRemainder(inventory);
 
-				ItemStack itemStack = cauldronRecipe.get().craft(inventory);
+				ItemStack itemStack = cauldronRecipe.get().craft(inventory, DynamicRegistryManager.EMPTY);
 				itemStack.onCraft(world, playerEntity, itemStack.getCount());
 
 				if (!playerEntity.getInventory().insertStack(remainingStacks.get(0))) {

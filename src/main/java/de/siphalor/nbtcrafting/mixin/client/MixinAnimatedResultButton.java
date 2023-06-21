@@ -22,6 +22,7 @@ import java.util.List;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.recipebook.AnimatedResultButton;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.util.math.MatrixStack;
@@ -59,7 +60,7 @@ public abstract class MixinAnimatedResultButton extends ClickableWidget {
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/item/ItemRenderer;renderInGui(Lnet/minecraft/item/ItemStack;II)V", shift = Shift.AFTER),
 			locals = LocalCapture.CAPTURE_FAILSOFT
 	)
-	private void drawButton(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci, MinecraftClient minecraftClient, int int_3, int int_4, boolean boolean_1, MatrixStack matrices_2, @SuppressWarnings("rawtypes") List list_1, ItemStack stack) {
-		minecraftClient.getItemRenderer().renderGuiItemOverlay(minecraftClient.textRenderer, stack, this.x + itemDrawOffset, this.y + itemDrawOffset);
+	private void drawButton(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci, MinecraftClient minecraftClient, int int_3, int int_4, boolean boolean_1, MatrixStack matrices_2, @SuppressWarnings("rawtypes") List list_1, ItemStack stack) {
+		context.drawItemInSlot(minecraftClient.textRenderer, stack, this.getX() + itemDrawOffset, this.getY() + itemDrawOffset);
 	}
 }

@@ -27,7 +27,6 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.ShapedRecipe;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
-import net.minecraft.util.registry.Registry;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -37,6 +36,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import de.siphalor.nbtcrafting.util.duck.IItemStack;
+
+import static net.minecraft.registry.Registries.ITEM;
 
 @Mixin(CookingRecipeSerializer.class)
 public abstract class MixinCookingRecipeSerializer {
@@ -51,7 +52,7 @@ public abstract class MixinCookingRecipeSerializer {
 		}
 		ItemStack output = ShapedRecipe.outputFromJson(jsonObject.getAsJsonObject(resultPropertyName));
 		resultTag = output.getNbt();
-		return Registry.ITEM.getId(output.getItem()).toString();
+		return ITEM.getId(output.getItem()).toString();
 	}
 
 	@Inject(method = "read(Lnet/minecraft/util/Identifier;Lcom/google/gson/JsonObject;)Lnet/minecraft/recipe/AbstractCookingRecipe;", at = @At(value = "TAIL"), locals = LocalCapture.CAPTURE_FAILHARD)

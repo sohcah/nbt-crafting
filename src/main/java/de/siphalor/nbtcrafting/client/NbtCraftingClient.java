@@ -19,6 +19,7 @@ package de.siphalor.nbtcrafting.client;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 import com.google.common.collect.ImmutableMap;
@@ -33,8 +34,8 @@ import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeManager;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 import de.siphalor.nbtcrafting.NbtCrafting;
 import de.siphalor.nbtcrafting.mixin.RecipeManagerAccessor;
@@ -62,7 +63,7 @@ public class NbtCraftingClient implements ClientModInitializer {
 			int recipeCount = buf.readVarInt();
 			NbtCrafting.advancedIngredientSerializationEnabled.set(true);
 			for (int i = 0; i < recipeCount; i++) {
-				RecipeSerializer<?> serializer = Registry.RECIPE_SERIALIZER.get(buf.readIdentifier());
+				RecipeSerializer<?> serializer = Registries.RECIPE_SERIALIZER.get(buf.readIdentifier());
 				Identifier id = buf.readIdentifier();
 
 				Recipe<?> recipe = serializer.read(id, buf);
@@ -76,6 +77,6 @@ public class NbtCraftingClient implements ClientModInitializer {
 	}
 
 	public static RecipeManager getClientRecipeManager() {
-		return MinecraftClient.getInstance().getNetworkHandler().getRecipeManager();
+		return Objects.requireNonNull(MinecraftClient.getInstance().getNetworkHandler()).getRecipeManager();
 	}
 }

@@ -25,12 +25,14 @@ import net.fabricmc.api.Environment;
 
 import de.siphalor.nbtcrafting.recipe.BrewingRecipe;
 
+import net.minecraft.registry.DynamicRegistryManager;
+
 @Environment(EnvType.CLIENT)
 public class REIPlugin implements REIClientPlugin {
 	@Override
 	public void registerDisplays(DisplayRegistry registry) {
 		registry.registerFiller(BrewingRecipe.class, recipe -> {
-			return new DefaultBrewingDisplay(recipe.getBase(), recipe.getIngredient(), recipe.getOutput());
+			return new DefaultBrewingDisplay(recipe.getBase(), recipe.getIngredient(), recipe.getOutput(DynamicRegistryManager.EMPTY));
 		});
 	}
 }

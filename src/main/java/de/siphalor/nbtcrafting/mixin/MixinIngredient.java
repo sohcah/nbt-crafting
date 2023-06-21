@@ -35,11 +35,12 @@ import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.ShapedRecipe;
-import net.minecraft.tag.TagKey;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryEntry;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -233,10 +234,8 @@ public abstract class MixinIngredient implements IIngredient, ICloneable {
 		if (jsonObject.has("item")) {
 			final Identifier identifier = new Identifier(JsonHelper.getString(jsonObject, "item"));
 			try {
-				final Item item = Registry.ITEM.getOrEmpty(identifier).orElseThrow(() -> {
-					throw new JsonSyntaxException("Unknown item '" + identifier.toString() + "'");
-				});
-				IngredientStackEntry entry = new IngredientStackEntry(Registry.ITEM.getRawId(item), loadIngredientEntryCondition(jsonObject));
+				final Item item = Registries.ITEM.getOrEmpty(identifier).orElseThrow(() -> new JsonSyntaxException("Unknown item '" + identifier.toString() + "'"));
+				IngredientStackEntry entry = new IngredientStackEntry(Registries.ITEM.getRawId(item), loadIngredientEntryCondition(jsonObject));
 				if (jsonObject.has("remainder")) {
 					entry.setRecipeRemainder(ShapedRecipe.outputFromJson(JsonHelper.getObject(jsonObject, "remainder")));
 				}
@@ -249,14 +248,12 @@ public abstract class MixinIngredient implements IIngredient, ICloneable {
 		if (jsonObject.has("potion")) {
 			final Identifier identifier = new Identifier(JsonHelper.getString(jsonObject, "potion"));
 			try {
-				Registry.POTION.getOrEmpty(identifier).orElseThrow(() -> {
-					throw new JsonSyntaxException("Unknown potion '" + identifier.toString() + "'");
-				});
+				Registries.POTION.getOrEmpty(identifier).orElseThrow(() -> new JsonSyntaxException("Unknown potion '" + identifier.toString() + "'"));
 				IngredientEntryCondition condition = loadIngredientEntryCondition(jsonObject);
 				if (condition.requiredElements == NbtUtil.EMPTY_COMPOUND)
 					condition.requiredElements = new NbtCompound();
 				condition.requiredElements.putString("Potion", identifier.toString());
-				IngredientStackEntry entry = new IngredientStackEntry(Registry.ITEM.getRawId(Items.POTION), condition);
+				IngredientStackEntry entry = new IngredientStackEntry(Registries.ITEM.getRawId(Items.POTION), condition);
 				if (jsonObject.has("remainder")) {
 					entry.setRecipeRemainder(ShapedRecipe.outputFromJson(JsonHelper.getObject(jsonObject, "remainder")));
 				}
@@ -270,13 +267,13 @@ public abstract class MixinIngredient implements IIngredient, ICloneable {
 			throw new JsonParseException("An ingredient entry needs either a tag or an item");
 		}
 		final Identifier identifier2 = new Identifier(JsonHelper.getString(jsonObject, "tag"));
-		final TagKey<Item> tag = TagKey.of(Registry.ITEM_KEY, identifier2);
+		final TagKey<Item> tag = TagKey.of(RegistryKeys.ITEM, identifier2);
 		if (tag == null) {
 			throw new JsonSyntaxException("Unknown item tag '" + identifier2 + "'");
 		}
 		Collection<Integer> itemIds = new IntArrayList();
-		for (RegistryEntry<Item> entry : Registry.ITEM.iterateEntries(tag)) {
-			itemIds.add(Registry.ITEM.getRawId(entry.value()));
+		for (RegistryEntry<Item> entry : Registries.ITEM.iterateEntries(tag)) {
+			itemIds.add(Registries.ITEM.getRawId(entry.value()));
 		}
 		IngredientMultiStackEntry entry = new IngredientMultiStackEntry(itemIds, loadIngredientEntryCondition(jsonObject));
 		entry.setTag(identifier2.toString());

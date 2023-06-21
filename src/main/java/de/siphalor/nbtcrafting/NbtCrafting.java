@@ -38,9 +38,10 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.*;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -154,17 +155,17 @@ public class NbtCrafting implements ModInitializer {
 			sender.sendPacket(PRESENCE_CHANNEL, new PacketByteBuf(Unpooled.buffer()));
 		});
 		ServerLoginConnectionEvents.DISCONNECT.register((handler, server) -> {
-			hasModClientConnectionHashes.remove(handler.getConnection().hashCode());
+			hasModClientConnectionHashes.remove(handler.getConnectionInfo().hashCode());
 		});
 		ServerLoginNetworking.registerGlobalReceiver(PRESENCE_CHANNEL, (server, handler, understood, buf, synchronizer, responseSender) -> {
 			if (understood) {
-				hasModClientConnectionHashes.add(handler.getConnection().hashCode());
+				hasModClientConnectionHashes.add(handler.getConnectionInfo().hashCode());
 			}
 		});
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-			if (hasModClientConnectionHashes.contains(handler.getConnection().hashCode())) {
+			if (hasModClientConnectionHashes.contains(handler.getConnectionAddress().hashCode())) {
 				((IServerPlayerEntity) handler.player).nbtCrafting$setClientModPresent(true);
-				hasModClientConnectionHashes.remove(handler.getConnection().hashCode());
+				hasModClientConnectionHashes.remove(handler.getConnectionAddress().hashCode());
 			}
 		});
 	}
@@ -179,7 +180,7 @@ public class NbtCrafting implements ModInitializer {
 	public static <T extends Recipe<?>> RecipeType<T> registerRecipeType(String name) {
 		Identifier recipeTypeId = new Identifier(MOD_ID, name);
 		RecipeTypeHelper.addToSyncBlacklist(recipeTypeId);
-		return Registry.register(Registry.RECIPE_TYPE, recipeTypeId, new RecipeType<T>() {
+		return Registry.register(Registries.RECIPE_TYPE, recipeTypeId, new RecipeType<T>() {
 			@Override
 			public String toString() {
 				return MOD_ID + ":" + name;
@@ -190,7 +191,7 @@ public class NbtCrafting implements ModInitializer {
 	public static <S extends RecipeSerializer<T>, T extends Recipe<?>> S registerRecipeSerializer(String name, S recipeSerializer) {
 		Identifier serializerId = new Identifier(MOD_ID, name);
 		RecipeTypeHelper.addToSyncBlacklist(serializerId);
-		return Registry.register(Registry.RECIPE_SERIALIZER, serializerId, recipeSerializer);
+		return Registry.register(Registries.RECIPE_SERIALIZER, serializerId, recipeSerializer);
 	}
 
 	public static PacketByteBuf createAdvancedRecipeSyncPacket(RecipeManager recipeManager) {
@@ -203,12 +204,12 @@ public class NbtCrafting implements ModInitializer {
 				}
 			}
 			return false;
-		}).collect(Collectors.toList());
+		}).toList();
 		buf.writeVarInt(recipes.size());
 		for (Recipe<?> recipe : recipes) {
 			@SuppressWarnings("rawtypes")
 			RecipeSerializer serializer = recipe.getSerializer();
-			buf.writeIdentifier(Registry.RECIPE_SERIALIZER.getId(serializer));
+			buf.writeIdentifier(Registries.RECIPE_SERIALIZER.getId(serializer));
 			buf.writeIdentifier(recipe.getId());
 			//noinspection unchecked
 			serializer.write(buf, recipe);
