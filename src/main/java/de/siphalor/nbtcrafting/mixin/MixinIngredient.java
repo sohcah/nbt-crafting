@@ -90,7 +90,7 @@ public abstract class MixinIngredient implements IIngredient, ICloneable {
 //		}
 //	}
 
-	@Inject(method = "test", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "test(Lnet/minecraft/item/ItemStack;)Z", at = @At("HEAD"), cancellable = true)
 	public void matches(ItemStack stack, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
 		if (stack == null) {
 			callbackInfoReturnable.setReturnValue(false);
@@ -195,8 +195,8 @@ public abstract class MixinIngredient implements IIngredient, ICloneable {
 		}
 	}
 
-	@Inject(method = "fromJson", at = @At("HEAD"), cancellable = true)
-	private static void fromJson(JsonElement element, CallbackInfoReturnable<Ingredient> callbackInfoReturnable) {
+	@Inject(method = "fromJson(Lcom/google/gson/JsonElement;Z)Lnet/minecraft/recipe/Ingredient;", at = @At("HEAD"), cancellable = true)
+	private static void fromJson(JsonElement element, boolean allowAir, CallbackInfoReturnable<Ingredient> callbackInfoReturnable) {
 		if (element == null || element.isJsonNull()) {
 			throw new JsonSyntaxException("Item cannot be null");
 		}
