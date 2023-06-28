@@ -49,7 +49,7 @@ dependencies {
 //		transitive false
 //	}
 
-	modRuntimeOnly("com.github.astei:lazydfu:master-SNAPSHOT")
+	// modRuntimeOnly("com.github.astei:lazydfu:master-SNAPSHOT")
 
 	testmodImplementation sourceSets.main.output
 }
