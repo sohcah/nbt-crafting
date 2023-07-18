@@ -48,7 +48,7 @@ public abstract class MixinAnimatedResultButton extends ClickableWidget {
 
 	@Inject(
 			method = "renderButton",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawItem(Lnet/minecraft/item/ItemStack;IIII)V"),
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawItemWithoutEntity(Lnet/minecraft/item/ItemStack;II)V"),
 			locals = LocalCapture.CAPTURE_FAILSOFT
 	)
 	private void beforeItemDrawn(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci, MinecraftClient minecraftClient, int i, int j, boolean bl, List list, ItemStack itemStack, int offset) {
@@ -57,7 +57,7 @@ public abstract class MixinAnimatedResultButton extends ClickableWidget {
 
 	@Inject(
 			method = "renderButton",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawItem(Lnet/minecraft/item/ItemStack;IIII)V", shift = Shift.AFTER),
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawItemWithoutEntity(Lnet/minecraft/item/ItemStack;II)V", shift = Shift.AFTER),
 			locals = LocalCapture.CAPTURE_FAILSOFT
 	)
 	private void drawButton(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci, MinecraftClient minecraftClient, int i, int j, boolean bl, List list, ItemStack stack, int k) {
